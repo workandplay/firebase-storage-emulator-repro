@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+
+    <p>Firebase Storage Emulator Repro - Hanging requests</p>
+    <div id='output'></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-storage.js"></script>
+
+    <script>
+        firebase.initializeApp(
+            {
+                "projectId": "demo-repro",
+                "databaseURL": "https://demo-repro.firebaseio.com",
+                "storageBucket": "demo-repro.appspot.com",
+                "apiKey": "fake-api-key",
+                "authDomain": "demo-repro.firebaseapp.com"
+            }
+        );
+
+        var storage = firebase.storage();
+        storage.useEmulator("localhost", 9199);
+
+        var array = Array(50).fill("⏲️ Pending");
+
+        function updateDisplay() {
+            var div = document.getElementById('output');
+            div.innerText = array.map((x, j) => j + ': ' + x).join("\n");
+        }
+
+        updateDisplay()
+
+        array.map((x, i) => {
+            var ref = firebase.storage().ref(String(i));
+            ref.putString('✅ Success').then((snapshot) => {
+                return ref.getDownloadURL();
+            }).then(url => {
+                return fetch(url)
+            }).then(response => response.text()).then(text => {
+                array[i] = text;
+                updateDisplay()
+            })
+                .catch((error) => {
+                });
+        });
+
+    </script>
+
+</body>
+
+</html>
