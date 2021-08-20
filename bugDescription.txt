@@ -1,0 +1,10 @@
+Summary : When downloading data from Firebase emulator storage, some requests stay "pending" so all data are not downloaded.
+
+Description : We're using the Firebase emulator in our project. We have many assets stored in the emulator storage.
+              When requesting the emulator storage to download these assets, some request stay pending and we need to refresh multiple times to finally get all assets. 
+
+How to reproduce : Use the following project to reproduce this behaviour. This is a simple html page with a localhost storage emulator.
+                   String are sent to the emulator then downloaded and displayed back on the page. 
+                   "Pending" string are data that could not be downloaded. "Success" string are data wich were downloaded succefully.
+                   
+                   
